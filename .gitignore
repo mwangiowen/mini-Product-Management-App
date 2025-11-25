@@ -1,36 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output (GitHub Actions handles this)
+dist/
+dist-ssr/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
+# OS files
 .DS_Store
-dist
-dist-ssr
-coverage
-*.local
+Thumbs.db
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Editor files
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
+# Cache
+.eslintcache
 *.tsbuildinfo
 
-.eslintcache
+# Coverage
+coverage/
 
-# Cypress
+# Test artifacts
 /cypress/videos/
 /cypress/screenshots/
-
-# Vitest
 __screenshots__/

@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# Build the project
-echo "🔨 Building project..."
-npm run build
-
-# Copy index.html to 404.html for SPA routing
-echo "📄 Creating 404.html for SPA routing..."
-cp dist/index.html dist/404.html
-
-echo "✅ Build complete! Deploy the 'dist' folder to GitHub Pages."
-echo "💡 Make sure to enable GitHub Pages in your repository settings."
+echo "🚀 GitHub Actions will automatically:"
+echo "   1. Build your project (npm run build)"
+echo "   2. Create 404.html for SPA routing"
+echo "   3. Deploy to GitHub Pages"
+echo ""
+echo "📝 Just commit and push to main branch:"
+echo "   git add ."
+echo "   git commit -m 'Deploy updates'"
+echo "   git push origin main"
+echo ""
+echo "✅ No need to build locally - GitHub handles everything!"
