@@ -164,10 +164,12 @@ const handleLogin = async () => {
   error.value = ''
 
   try {
-    await authStore.login(form.value)
+    console.log('🚀 Starting login process')
+    const result = await authStore.login(form.value)
+    console.log('✅ Login completed, redirecting to products')
     router.push('/products')
   } catch (err) {
-    console.error('Login failed:', err)
+    console.error('❌ Login failed:', err)
     error.value = err.message || 'Invalid username or password'
   } finally {
     loading.value = false

@@ -124,14 +124,19 @@ const handleSubmit = async () => {
   error.value = ''
 
   try {
-    await productStore.addProduct(form.value)
-    toastMessage.value = 'Product added successfully'
+    console.log('📦 Submitting new product:', form.value)
+    const result = await productStore.addProduct(form.value)
+    console.log('✅ Product added successfully:', result)
+    
+    toastMessage.value = 'Product added successfully!'
     toastType.value = 'success'
     toast.value?.show()
+    
     setTimeout(() => {
       router.push('/products')
-    }, 1000)
+    }, 1500)
   } catch (err) {
+    console.error('❌ Failed to add product:', err)
     error.value = err.message || 'Failed to add product'
     toastMessage.value = err.message || 'Failed to add product'
     toastType.value = 'error'
@@ -145,11 +150,14 @@ const handleUpload = (e) => {
   const f = e.target.files?.[0]
   if (!f) return
   
+  console.log('🖼️ Uploading image:', f.name, 'Size:', f.size)
   uploadedFileName.value = f.name
+  
   const reader = new FileReader()
   reader.onload = () => {
     form.value.thumbnail = reader.result
-    toastMessage.value = `Image "${f.name}" uploaded successfully`
+    console.log('✅ Image uploaded successfully:', f.name)
+    toastMessage.value = `Image "${f.name}" uploaded successfully!`
     toastType.value = 'success'
     toast.value?.show()
   }

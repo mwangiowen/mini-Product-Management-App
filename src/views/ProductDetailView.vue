@@ -245,8 +245,11 @@ const fetchProduct = async () => {
   error.value = ''
 
   try {
+    console.log('📎 Fetching product details for ID:', route.params.id)
     product.value = await productStore.fetchProductById(route.params.id)
+    console.log('✅ Product details loaded:', product.value.title)
   } catch (err) {
+    console.error('❌ Failed to load product:', err)
     error.value = 'Failed to load product'
   } finally {
     loading.value = false
@@ -264,15 +267,19 @@ const deleteProduct = async () => {
       throw new Error('Invalid product ID')
     }
     
+    console.log('🗑️ Deleting product with ID:', productId)
     await productStore.deleteProduct(productId)
-    toastMessage.value = 'Product deleted successfully'
+    console.log('✅ Product deleted successfully')
+    
+    toastMessage.value = 'Product deleted successfully!'
     toastType.value = 'success'
     toast.value?.show()
     
     setTimeout(() => {
       router.push('/products')
-    }, 1000)
+    }, 1500)
   } catch (err) {
+    console.error('❌ Failed to delete product:', err)
     error.value = err.message || 'Failed to delete product'
     toastMessage.value = err.message || 'Failed to delete product'
     toastType.value = 'error'

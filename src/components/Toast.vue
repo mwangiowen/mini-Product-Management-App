@@ -1,10 +1,21 @@
 <template>
-  <div v-if="visible" :class="toastClass" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300">
+  <div 
+    v-if="visible" 
+    :class="toastClass" 
+    class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform"
+    :style="{ transform: visible ? 'translateY(0)' : 'translateY(-100%)' }"
+  >
     <div class="flex items-center gap-3">
-      <div v-if="type === 'success'" class="text-green-600">✓</div>
-      <div v-if="type === 'error'" class="text-red-600">✗</div>
-      <div v-if="type === 'info'" class="text-blue-600">ℹ</div>
+      <div v-if="type === 'success'" class="text-green-600 text-lg font-bold">✓</div>
+      <div v-if="type === 'error'" class="text-red-600 text-lg font-bold">✗</div>
+      <div v-if="type === 'info'" class="text-blue-600 text-lg font-bold">ℹ</div>
       <span class="text-sm font-medium">{{ message }}</span>
+      <button 
+        @click="hide" 
+        class="ml-2 text-gray-400 hover:text-gray-600 text-lg font-bold"
+      >
+        ×
+      </button>
     </div>
   </div>
 </template>
@@ -27,15 +38,21 @@ const toastClass = computed(() => ({
 }))
 
 const show = () => {
+  console.log('🎉 Showing toast:', props.type, props.message)
   visible.value = true
   setTimeout(() => {
-    visible.value = false
+    hide()
   }, props.duration)
+}
+
+const hide = () => {
+  console.log('🔄 Hiding toast')
+  visible.value = false
 }
 
 watch(() => props.message, (newMessage) => {
   if (newMessage) show()
 })
 
-defineExpose({ show })
+defineExpose({ show, hide })
 </script>

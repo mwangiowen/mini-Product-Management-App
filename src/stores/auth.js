@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(credentials) {
       try {
-        console.log('Attempting login with:', credentials)
+        console.log('🔐 Attempting login with:', { username: credentials.username, password: '***' })
 
         const response = await fetch('https://dummyjson.com/auth/login', {
           method: 'POST',
@@ -34,19 +34,23 @@ export const useAuthStore = defineStore('auth', {
           }),
         })
 
-        console.log('Response status:', response.status)
-        console.log('Response headers:', response.headers)
+        console.log('📡 Login response status:', response.status)
 
         if (!response.ok) {
-          const errorText = await response.text()
-          console.log('Error response:', errorText)
-          throw new Error(`HTTP ${response.status}: ${errorText}`)
+          const errorData = await response.json()
+          console.error('❌ Login error response:', errorData)
+          throw new Error(errorData.message || `Login failed with status ${response.status}`)
         }
 
         const data = await response.json()
-        console.log('Response data:', data)
+        console.log('✅ Login successful:', {
+          id: data.id,
+          username: data.username,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email
+        })
 
-        // DummyJSON returns accessToken, not token
         this.token = data.accessToken
         this.user = {
           id: data.id,
@@ -64,7 +68,7 @@ export const useAuthStore = defineStore('auth', {
 
         return data
       } catch (error) {
-        console.error('Login error:', error)
+        console.error('❌ Login error:', error)
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
           throw new Error('Network error - please check your internet connection')
         }
@@ -73,10 +77,12 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
+      console.log('🚪 Logging out user')
       this.token = null
       this.user = null
       localStorage.removeItem('token')
       localStorage.removeItem('user')
+      localStorage.removeItem('userPreferences')
     },
 
     restoreSession() {
@@ -128,6 +134,79 @@ export const useAuthStore = defineStore('auth', {
       this.setUser(demo, demo.refreshToken)
       this.preferences = prefs
       localStorage.setItem('userPreferences', JSON.stringify(this.preferences))
+    },
+
+    async getCurrentUser() {
+      if (!this.token) {
+        throw new Error('No token available')
+      }
+
+      try {
+        console.log('👤 Getting current user info')
+        const response = await fetch('https://dummyjson.com/auth/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+          },
+          credentials: 'include',
+        })
+
+        if (!response.ok) {
+          console.error('❌ Failed to get current user, status:', response.status)
+          throw new Error('Failed to get current user')
+        }
+
+        const userData = await response.json()
+        console.log('✅ Current user data:', userData)
+        this.user = userData
+        localStorage.setItem('user', JSON.stringify(this.user))
+        return userData
+      } catch (error) {
+        console.error('❌ Get current user error:', error)
+        throw error
+      }
+    },
+
+    async refreshToken() {
+      if (!this.user?.refreshToken) {
+        throw new Error('No refresh token available')
+      }
+
+      try {
+        console.log('🔄 Refreshing auth token')
+        const response = await fetch('https://dummyjson.com/auth/refresh', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            refreshToken: this.user.refreshToken,
+            expiresInMins: 30,
+          }),
+          credentials: 'include',
+        })
+
+        if (!response.ok) {
+          console.error('❌ Failed to refresh token, status:', response.status)
+          throw new Error('Failed to refresh token')
+        }
+
+        const data = await response.json()
+        console.log('✅ Token refreshed successfully')
+        this.token = data.accessToken
+        if (data.refreshToken) {
+          this.user.refreshToken = data.refreshToken
+        }
+        
+        localStorage.setItem('token', this.token)
+        localStorage.setItem('user', JSON.stringify(this.user))
+        
+        return data
+      } catch (error) {
+        console.error('❌ Refresh token error:', error)
+        this.logout()
+        throw error
+      }
     },
   },
 })
