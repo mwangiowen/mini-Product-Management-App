@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management App</title>
+    <script>
+      // SPA routing fix for GitHub Pages
+      const path = window.location.pathname;
+      const base = '/mini Product Management App';
+      
+      if (path !== base + '/' && path !== base + '/index.html') {
+        // Store the current path and redirect to index
+        sessionStorage.setItem('redirect', path + window.location.search + window.location.hash);
+        window.location.replace(base + '/index.html');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
