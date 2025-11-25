@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management App</title>
+    <script>
+      // Restore the original path from 404 redirect
+      const savedPath = sessionStorage.getItem('pathRedirect');
+      if (savedPath) {
+        sessionStorage.removeItem('pathRedirect');
+        history.replaceState(null, null, savedPath);
+      }
+    </script>
+    <script type="module" crossorigin src="/mini-Product-Management-App/assets/index-1usKLQnL.js"></script>
+    <link rel="stylesheet" crossorigin href="/mini-Product-Management-App/assets/index-D-UI0CXW.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
